@@ -1,4 +1,38 @@
+<!DOCTYPE HTML>
 <html>
-<head>hello</head>
-<body>Welcome to India</body>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>TMXROCKERS</title>
+    <script src="https://content.jwplatform.com/libraries/OABGyluE.js"></script>
+</head>
+
+<body>
+
+    <div id="myElement">Loading the player ...</div>
+
+    <script>
+        function getUrlQueryParams(url) {
+            var queryString = url.split("?")[1];
+            var keyValuePairs = queryString.split("&");
+            var keyValue = [];
+            var queryParams = {};
+            keyValuePairs.forEach(function (pair) {
+                keyValue = pair.split("=");
+                queryParams[keyValue[0]] = decodeURIComponent(keyValue[1]).replace(/\+/g, " ");
+            });
+            return queryParams;
+        }
+    </script>
+    <script type="text/javascript">
+        jwplayer("myElement").setup({
+            file: getUrlQueryParams(window.location.search).file,
+            image: getUrlQueryParams(window.location.search).image,
+            title: getUrlQueryParams(window.location.search).title,
+            height: '100%',
+            width: '100%'
+        });
+    </script>
+</body>
+
 </html>
