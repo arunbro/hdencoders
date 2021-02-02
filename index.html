@@ -12,36 +12,51 @@
     <div id="myElement">Loading the player ...</div>
 
     <script>
-        function getUrlQueryParams(url) {
-            var queryString = url.split("?")[1];
-            var keyValuePairs = queryString.split("&");
-            var keyValue = [];
-            var queryParams = {};
-            keyValuePairs.forEach(function (pair) {
-                keyValue = pair.split("=");
-                queryParams[keyValue[0]] = decodeURIComponent(keyValue[1]).replace(/\+/g, " ");
-            });
-            return queryParams;
+
+        if (!window.location.getParameter) {
+            window.location.getParameter = function (key) {
+                function parseParams() {
+                    var params = {},
+                        e,
+                        a = /\+/g,  // Regex for replacing addition symbol with a space
+                        r = /([^&=]+)=?([^&]*)/g,
+                        d = function (s) { return decodeURIComponent(s.replace(a, " ")); },
+                        q = window.location.search.substring(1);
+
+                    while (e = r.exec(q))
+                        params[d(e[1])] = d(e[2]);
+
+                    return params;
+                }
+
+                if (!this.queryStringParams)
+                    this.queryStringParams = parseParams();
+
+                return this.queryStringParams[key];
+            };
         }
 
 
     </script>
     <script type="text/javascript">
-        var queryParams = getUrlQueryParams(window.location.search);
-        var width = queryParams.width ? queryParams.width : '100%';
-        var height = queryParams.height ? queryParams.height : '100%';
-        var licenseUrl = queryParams.licenseUrl;
-        var file = queryParams.file;
-        var image = queryParams.image;
-        var title = queryParams.title;
+        var width = window.location.getParameter('width') ? window.location.getParameter('width') : '100%';
+        var height = window.location.getParameter('height') ? window.location.getParameter('height') : '100%';
+        var licenseUrl = window.location.getParameter('licenseUrl');
+        var file = window.location.getParameter('file');
+        var image = window.location.getParameter('image');
+        var title = window.location.getParameter('title');
+        var description = window.location.getParameter('description');
+        var floating = window.location.getParameter('floating') ? window.location.getParameter('floating') : false;
 
         if (licenseUrl) {
             jwplayer("myElement").setup({
                 file: file,
                 image: image,
                 title: title,
+                description: description,
                 height: height,
                 width: width,
+                floating: floating,
                 drm: {
                     widevine: {
                         url: licenseUrl
@@ -53,8 +68,10 @@
                 file: file,
                 image: image,
                 title: title,
+                description: description,
                 height: height,
-                width: width
+                width: width,
+                floating: floating
             });
         }
     </script>
