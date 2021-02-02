@@ -23,15 +23,40 @@
             });
             return queryParams;
         }
+
+
     </script>
     <script type="text/javascript">
-        jwplayer("myElement").setup({
-            file: getUrlQueryParams(window.location.search).file,
-            image: getUrlQueryParams(window.location.search).image,
-            title: getUrlQueryParams(window.location.search).title,
-            height: '100%',
-            width: '100%'
-        });
+        var queryParams = getUrlQueryParams(window.location.search);
+        var width = queryParams.width ? queryParams.width : '100%';
+        var height = queryParams.height ? queryParams.height : '100%';
+        var licenseUrl = queryParams.licenseUrl;
+        var file = queryParams.file;
+        var image = queryParams.image;
+        var title = queryParams.title;
+
+        if (licenseUrl) {
+            jwplayer("myElement").setup({
+                file: file,
+                image: image,
+                title: title,
+                height: height,
+                width: width,
+                drm: {
+                    widevine: {
+                        url: licenseUrl
+                    }
+                }
+            });
+        } else {
+            jwplayer("myElement").setup({
+                file: file,
+                image: image,
+                title: title,
+                height: height,
+                width: width
+            });
+        }
     </script>
 </body>
 
