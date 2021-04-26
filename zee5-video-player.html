@@ -35,6 +35,21 @@
 
         return this.queryStringParams[key];
       };
+
+      window.location.decryption = function (cipher_text, key) {
+        try {
+          const secretKey = CryptoJS.enc.Utf8.parse(key);
+          const decrypted_data = CryptoJS.AES.decrypt(cipher_text, secretKey, {
+            keySize: 128 / 8,
+            iv: CryptoJS.enc.Hex.parse("0000000000000000"),
+            mode: CryptoJS.mode.CBC
+          });
+          return decrypted_data.toString(CryptoJS.enc.Utf8);
+        } catch (e) {
+          console.log("Through exception while Decrypt the data - " + e);
+        }
+        return null;
+      };
     }
 
 
@@ -44,10 +59,7 @@
     var videoSourceBlob = window.location.getParameter('blob');
     if (videoSourceBlob) {
 
-      var parsedWordArray = CryptoJS.enc.Base64.parse(videoSourceBlob);
-      var parsedStr = parsedWordArray.toString(CryptoJS.enc.Utf8);
-
-      var parsedData = JSON.parse(parsedStr);
+      var parsedData = JSON.parse(window.location.decryption(videoSourceBlob.replace(/\s/g, '+'), "A3s68aORSgHs$71P"));
       var mainfestUrl = parsedData.mainfestUrl;
       var title = parsedData.title;
       var description = parsedData.description;
