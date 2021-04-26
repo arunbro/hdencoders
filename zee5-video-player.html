@@ -1,0 +1,93 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>TMXROCKERS</title>
+  <script src="https://content.jwplatform.com/libraries/OABGyluE.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js"></script>
+</head>
+
+<body>
+
+  <div id="myElement">Loading the player ...</div>
+
+  <script>
+
+    if (!window.location.getParameter) {
+      window.location.getParameter = function (key) {
+        function parseParams() {
+          var params = {},
+            e,
+            a = /\+/g,  // Regex for replacing addition symbol with a space
+            r = /([^&=]+)=?([^&]*)/g,
+            d = function (s) { return decodeURIComponent(s.replace(a, " ")); },
+            q = window.location.search.substring(1);
+
+          while (e = r.exec(q))
+            params[d(e[1])] = d(e[2]);
+
+          return params;
+        }
+
+        if (!this.queryStringParams)
+          this.queryStringParams = parseParams();
+
+        return this.queryStringParams[key];
+      };
+    }
+
+
+  </script>
+  <script type="text/javascript">
+
+    var videoSourceBlob = window.location.getParameter('blob');
+    if (videoSourceBlob) {
+
+      var parsedWordArray = CryptoJS.enc.Base64.parse(videoSourceBlob);
+      var parsedStr = parsedWordArray.toString(CryptoJS.enc.Utf8);
+
+      var parsedData = JSON.parse(parsedStr);
+      var mainfestUrl = parsedData.mainfestUrl;
+      var title = parsedData.title;
+      var description = parsedData.description;
+      var mainfestPoster = parsedData.mainfestPoster;
+      var subtitleURL = parsedData.subtitleURL;
+      var thumbnailURL = parsedData.thumbnailURL;
+      var licenseUrl = parsedData.licenseUrl;
+      var width = parsedData.width ? parsedData.width : '100%';
+      var height = parsedData.height ? parsedData.height : '100%';
+      var floating = parsedData.floating ? parsedData.floating : true;
+
+      jwplayer("myElement").setup({
+        file: mainfestUrl,
+        image: mainfestPoster,
+        title: title,
+        description: description,
+        height: height,
+        width: width,
+        floating: floating,
+        // drm: {
+        //   widevine: {
+        //     url: licenseUrl
+        //   }
+        // },
+        tracks: [
+          {
+            file: thumbnailURL,
+            kind: 'thumbnails'
+          },
+          {
+            file: subtitleURL,
+            kind: 'captions',
+            name: 'English'
+          }
+        ]
+      });
+    } else {
+      console.log("No source url found...!");
+    }
+  </script>
+</body>
+
+</html>
